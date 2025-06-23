@@ -1,0 +1,219 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum userRole {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum submissionStatus {
+  ACCEPTED
+  WRONG_ANSWER
+}
+
+enum authSource {
+  GOOGLE
+  LOCAL
+}
+
+enum taskStatus {
+  PENDING
+  COMPLETED
+  INCOMPLETE
+}
+
+model user {
+  id                String             @id @default(uuid())
+  name              String?
+  email             String             @unique
+  avatar            String?
+  role              userRole           @default(USER)
+  password          String?
+  isVerified        Boolean            @default(false)
+  authProvider      authSource         @default(LOCAL)
+  refreshToken      String?
+  verificationCode  String?
+  purchasedPlaylist String[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  // relation
+  problems          problem[]
+  problemSolved     problemSolved[]
+  playlist          playlist[]
+  purchases         PlaylistPurchase[]
+  tasks             Task[]
+  notifications     Notification[]
+}
+
+model problem {
+  id                String     @id @default(uuid())
+  title             String
+  description       String
+  difficulty        Difficulty
+  tags              String[] // array of strings
+  userId            String
+  examples          Json
+  constraints       Json
+  hints             Json?
+  editorial         String?
+  testCases         Json
+  codesnippets      Json
+  referenceSolution Json?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  // realation
+  user user @relation(fields: [userId], references: [id])
+
+  submission        submission[]
+  solvedBy          problemSolved[]
+  problemsPlaylists problemInPlaylist[]
+}
+
+model submission {
+  id            String           @id @default(uuid())
+  problemId     String
+  userId        String
+  sourceCode    Json
+  language      String
+  stdin         String?
+  stdout        String?
+  stderr        String?
+  compileOutput String?
+  status        submissionStatus // Accepted , wrong answer
+  memory        String?
+  time          String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  problem  problem    @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testcase testcase[]
+}
+
+model testcase {
+  id            String           @id @default(uuid())
+  submissionId  String
+  testCase      Int
+  passed        Boolean
+  stdout        String?
+  expected      String
+  stderr        String?
+  compileOutput String?
+  status        submissionStatus
+  memory        String?
+  time          String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  submission submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+}
+
+model problemSolved {
+  id        String   @id @default(uuid())
+  userId    String
+  problemId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    user    @relation(fields: [userId], references: [id])
+  problem problem @relation(fields: [problemId], references: [id])
+
+  @@unique([userId, problemId])
+}
+
+model playlist {
+  id          String              @id @default(uuid())
+  name        String
+  description String?
+  coverImage  String?             @default("https://res.cloudinary.com/da9yrilnn/image/upload/v1748326159/image_cocz64.png")
+  isPaid      Boolean             @default(false)
+  basePrice   Float?              @default(0)
+  userId      String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  problems    problemInPlaylist[]
+  user        user                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purchases   PlaylistPurchase[]
+
+  @@unique([name, userId])
+}
+
+model problemInPlaylist {
+  id         String   @id @default(uuid())
+  playListId String
+  problemId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  playlist playlist @relation(fields: [playListId], references: [id], onDelete: Cascade)
+  problem  problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([playListId, problemId])
+}
+
+model PlaylistPurchase {
+  id                            String   @id @default(uuid())
+  userId                        String
+  playlistId                    String
+  playlistName                  String
+  razorpayPaymentLinkId         String
+  razorpayPaymentLinkStatus     String
+  razorpayPaymentLinkRefereceId String   @unique
+  razorpayPaymentId             String?
+  razorpaySignature             String?
+  purchasedAt                   DateTime @default(now())
+  amount                        Float
+
+  user     user     @relation(fields: [userId], references: [id])
+  playlist playlist @relation(fields: [playlistId], references: [id])
+
+  @@unique([userId, playlistId]) // one user can't purchase same playlist twice
+}
+
+model Task {
+  id        String     @id @default(uuid())
+  userId    String
+  deadline  DateTime
+  status    taskStatus @default(PENDING)
+  task      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user          user           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  sent      Boolean  @default(false)
+  notifyAt  String
+  createdAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  
+}
