@@ -280,9 +280,9 @@ export const getReport = async (req, res) => {
         const allProblems = await db.problem.findMany();
         const totalProblems = allProblems.length;
         // allProblems.map((e) => console.log(e.difficulty))
-        const TotalEasyProblems = allProblems.filter(problem => problem.difficulty === "EASY").length;
-        const TotalMediumProblems = allProblems.filter(problem => problem.difficulty === "MEDIUM").length;
-        const TotalHardProblems = allProblems.filter(problem => problem.difficulty === "HARD").length;
+        const totalEasyProblems = allProblems.filter(problem => problem.difficulty === "EASY").length;
+        const totalMediumProblems = allProblems.filter(problem => problem.difficulty === "MEDIUM").length;
+        const totalHardProblems = allProblems.filter(problem => problem.difficulty === "HARD").length;
         const allSolvedProblems = await db.problem.findMany(
             {
                 where:{
@@ -307,9 +307,9 @@ export const getReport = async (req, res) => {
         const totalSolvedHardProblems = allSolvedProblems.filter(problem => problem.difficulty === "HARD").length;
         res.status(200).json(new apiResponse(200, {
             totalProblems,
-            TotalEasyProblems,
-            TotalMediumProblems,
-            TotalHardProblems,
+            totalEasyProblems,
+            totalMediumProblems,
+            totalHardProblems,
             totalSolvedProblems,
             totalSolvedEasyProblems,
             totalSolvedMediumProblems,
