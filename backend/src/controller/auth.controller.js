@@ -116,6 +116,7 @@ export const verifyToken = async (req, res) => {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge: 1000 * 60 * 60 * 24 
 
             });
 
@@ -123,6 +124,7 @@ export const verifyToken = async (req, res) => {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge: 1000 * 60 * 60 * 24  * 7
 
             });
 
@@ -220,12 +222,14 @@ export const loginUser = async (req, res) => {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge: 1000 * 60 * 60 * 24 ,
             });
 
             res.cookie("refreshToken", token.refreshToken, {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge:  7 * 1000 * 60 * 60 * 24 ,
             });
 
             res.status(200).json(new apiResponse(200, {
@@ -422,6 +426,7 @@ export const registerByGoogleOAuth = async (req, res) => {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV !== "development",
+            maxAge: 1000 * 60 * 60 * 24   
 
         });
 
@@ -429,6 +434,7 @@ export const registerByGoogleOAuth = async (req, res) => {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV !== "development",
+            maxAge: 1000 * 60 * 60 * 24  * 7
 
         });
 
@@ -489,6 +495,7 @@ export const loginByGoogleOAuth = async (req, res) => {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV !== "development",
+            maxAge: 1000 * 60 * 60 * 24 
 
         });
 
@@ -496,6 +503,7 @@ export const loginByGoogleOAuth = async (req, res) => {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV !== "development",
+            maxAge: 1000 * 60 * 60 * 24  * 7
 
         });
 
@@ -573,6 +581,17 @@ export const uploadImage = async (req, res) => {
                 })
             }
         }
+    }
+}
+
+export const check = async (req , res)=>{
+    try {
+        res.status(200).json(new apiResponse(200, req.user, "User is authenticated"));
+    } catch (error) {
+        console.error("Error checking user:", error);
+        res.status(500).json({
+            error:"Error checking user"
+        })
     }
 }
 

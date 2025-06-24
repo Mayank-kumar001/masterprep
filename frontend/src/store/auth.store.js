@@ -11,6 +11,22 @@ const authStore = create(persist((set) => ({
     isSending: false,
     isLoggingIn: false,
     isGettingUser: false,
+    isCheckingAuth: false,
+
+    checkAuth: async () => {
+    set({ isCheckingAuth: true });
+    try {
+      const res = await axiosInstance.get("/auth/check");
+      console.log("checkauth response", res.data);
+
+      set({ userData: res.data.user });
+    } catch (error) {
+      console.log("❌ Error checking auth:", error);
+      set({ userData: null });
+    } finally {
+      set({ isCheckingAuth: false });
+    }
+  },
 
     getUser: async () => {
         set({ isGettingUser: true })
@@ -77,6 +93,8 @@ const authStore = create(persist((set) => ({
             set({ isSending: false });
         }
     },
+
+    
 
     login: async (data) => {
         set({ isLoggingIn: true });

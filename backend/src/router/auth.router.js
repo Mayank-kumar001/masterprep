@@ -1,5 +1,5 @@
 import express from "express"
-import {forgetPassword, getUser, loginByGoogleOAuth, loginUser, logoutUser, registerByGoogleOAuth, registerUser, resendVerficationCode, resetPassword, uploadImage, verifyToken } from "../controller/auth.controller.js";
+import {check, forgetPassword, getUser, loginByGoogleOAuth, loginUser, logoutUser, registerByGoogleOAuth, registerUser, resendVerficationCode, resetPassword, uploadImage, verifyToken } from "../controller/auth.controller.js";
 import { isLoggedIn } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -16,5 +16,6 @@ authRouter.post("/reset-password", resetPassword);
 authRouter.post("/logout",isLoggedIn, logoutUser);
 authRouter.post("/upload-image", upload.single('avatar'), uploadImage);
 authRouter.get("/me",isLoggedIn, getUser);
+authRouter.get("/check",isLoggedIn, check);
 
 export default authRouter;

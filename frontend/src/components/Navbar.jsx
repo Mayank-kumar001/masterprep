@@ -7,7 +7,8 @@ import authStore from "../store/auth.store";
 const navElements = ["Home", "Playlist", "Problems"];
 
 function Navbar({ isScroll }) {
-  const { userData, logout } = authStore();
+  const { userData, logout, loginAsDemoUser } = authStore();
+  // const refreshToken = 
   const navigate = useNavigate();
   const logoutUser = async () =>{
     try {
@@ -54,13 +55,15 @@ function Navbar({ isScroll }) {
         <ul className="flex gap-4 justify-center w-full">
 
             <li onClick={() => navigate("/home")} className="cursor-pointer hover:text-neutral-300">Home</li>
-            <li onClick={() => navigate("/allProblem")} className="cursor-pointer hover:text-neutral-300">playlist</li>
-            <li onClick={() => navigate("/playlist")} className="cursor-pointer hover:text-neutral-300">Problems</li>
+            <li onClick={() => navigate("/playlist")} className="cursor-pointer hover:text-neutral-300">playlist</li>
+            <li onClick={() => navigate("/allProblem")} className="cursor-pointer hover:text-neutral-300">Problems</li>
             <li onClick={() => navigate("/callstack")} className="cursor-pointer hover:text-neutral-300">callStack</li>
           
         </ul>
       </div>}
+      {console.log("hello world" , userData)}
      {!userData ? (<div className="flex gap-4 justify-end w-full">
+        
         <button onClick={() => navigate("/login")} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Login</button>
         <button onClick={() => navigate("/signup")} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Sign up</button>
       </div>) : (<div className="flex gap-4 justify-end w-full">

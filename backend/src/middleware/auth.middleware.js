@@ -43,12 +43,14 @@ export const isLoggedIn = async (req, res, next) => {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge: oneDay
             });
 
             res.cookie("refreshToken", token.refreshToken, {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: process.env.NODE_ENV !== "development",
+                maxAge: oneDay * 7,
             });
 
             decodedToken = { id: refreshDecodedToken.id };
