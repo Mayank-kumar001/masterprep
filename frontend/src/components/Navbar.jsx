@@ -63,7 +63,7 @@ function Navbar({ isScroll }) {
       </div>}
       {console.log("hello world" , userData)}
      {!userData ? (<div className="flex gap-4 justify-end w-full">
-        
+        <button onClick={() => loginAsDemoUser()} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Login as demo user</button>
         <button onClick={() => navigate("/login")} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Login</button>
         <button onClick={() => navigate("/signup")} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Sign up</button>
       </div>) : (<div className="flex gap-4 justify-end w-full">

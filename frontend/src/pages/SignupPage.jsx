@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { axiosInstance } from '../lib/axios';
-import  authStore  from '../store/auth.store';
+import authStore from '../store/auth.store';
 import { useNavigate } from 'react-router-dom';
 import getCodeFromGoogle from '../lib/googleOAuth';
 
@@ -31,20 +31,20 @@ console.log("heelow oe")
 
 function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const { register, handleSubmit, formState:{errors} } = useForm({ resolver:zodResolver(signupSchema) });
-  const {signup, isSigninUp} = authStore();
+  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(signupSchema) });
+  const { signup, isSigninUp, loginAsDemoUser, isLoggingIn } = authStore();
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-  try {
-    console.log(data);
-    await signup(data);
-    navigate("/verify")
-    
-  } catch (error) {
-    console.log("signup failed",error);
+    try {
+      console.log(data);
+      await signup(data);
+      navigate("/verify")
+
+    } catch (error) {
+      console.log("signup failed", error);
+    }
   }
-}
 
   return (
     <div>
@@ -66,14 +66,18 @@ function SignupPage() {
           <div className='flex gap-2'>
             <input type={showPassword ? `password` : `text`} className="text-sm font-medium px-2 py-1 w-[90%] mt-1 block border-2 border-gray-200 rounded-lg  focus:outline-none focus:border-blue-200 focus:shadow-sm focus:bg-blue-100 focus:text-black" name="Password" placeholder='At least 8 characters.' {...register("password")} required />
 
-          <button onClick={(e) => {
-            e.preventDefault();
-            setShowPassword(!showPassword)
-            }} className='cursor-pointer'> {showPassword ? <EyeClosed color="#1e86ff" /> : <Eye color="#1e86ff"/>} </button>
+            <button onClick={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword)
+            }} className='cursor-pointer'> {showPassword ? <EyeClosed color="#1e86ff" /> : <Eye color="#1e86ff" />} </button>
           </div>
         </div>
 
         <button type='submit' className='flex justify-center items-center gap-4 cursor-pointer bg-orange-500 text-white px-10 py-2 rounded-lg hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]' disabled={isSigninUp}>Create Profile {isSigninUp ? (<Loader2 className='animate-spin' />) : ""}</button>
+        <button type='submit' className=' w-full flex justify-center items-center gap-4 cursor-pointer bg-orange-500 text-white px-10 py-2 mb-4 rounded-lg hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]' disabled={isLoggingIn} onClick={() => {
+          loginAsDemoUser()
+          navigate("/home")
+        }}>Login with demo credentials {isLoggingIn ? (<Loader2 className='animate-spin' />) : ""}</button>
 
         <div className='w-full flex items-center justify-center gap-2'>
           <span className="h-0 w-[25%] border border-gray-200"></span>
@@ -84,14 +88,14 @@ function SignupPage() {
         <button onClick={(e) => {
           e.preventDefault();
           getCodeFromGoogle("register")
-          }} className='cursor-pointer bg-white px-10 py-2 rounded-lg flex items-center justify-center border-gray-200 border-2 hover:shadow-[0_2px_25px_rgb(0,0,0,0.1)]'>
+        }} className='cursor-pointer bg-white px-10 py-2 rounded-lg flex items-center justify-center border-gray-200 border-2 hover:shadow-[0_2px_25px_rgb(0,0,0,0.1)]'>
           <img className='bg-clip-content' src="./public/google.png" alt="google logo" width={"20px"} />
           <span className='text-sm font-medium text-black'>Continue with Google</span>
         </button>
-        
+
       </form>
     </div>
-  
+
   )
 }
 

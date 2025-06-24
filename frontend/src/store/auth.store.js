@@ -94,7 +94,25 @@ const authStore = create(persist((set) => ({
         }
     },
 
-    
+    loginAsDemoUser: async () => {
+        set({ isLoggingIn: true });
+        try {
+            const data = {
+                email: "abc@gmail.com",
+                password: "123456789"
+              }
+            const res = await axiosInstance.post("/auth/login", data);
+            console.log(res.data);
+            set({ userData: res.data.data });
+            toast.success("login successfull")
+
+        } catch (error) {
+            toast.error(`${error.response.data.message}`);
+            throw new Error("error in login the user")
+        } finally {
+            set({ isLoggingIn: false })
+        }
+    },
 
     login: async (data) => {
         set({ isLoggingIn: true });

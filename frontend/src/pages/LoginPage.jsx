@@ -16,7 +16,7 @@ function LoginPage() {
   })
 
   const { register, handleSubmit, formState:{errors}} = useForm( {resolver: zodResolver(loginSchema)} )
-  const { isLoggingIn, login, } = authStore();
+  const { isLoggingIn, login, loginAsDemoUser } = authStore();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -58,6 +58,10 @@ function LoginPage() {
 
         <div>
           <button type='submit' className=' w-full flex justify-center items-center gap-4 cursor-pointer bg-orange-500 text-white px-10 py-2 mb-4 rounded-lg hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]' disabled={isLoggingIn}>Login {isLoggingIn ? (<Loader2 className='animate-spin' />) : ""}</button>
+          <button type='submit' className=' w-full flex justify-center items-center gap-4 cursor-pointer bg-orange-500 text-white px-10 py-2 mb-4 rounded-lg hover:shadow-[0_3px_10px_rgb(0,0,0,0.2)]' disabled={isLoggingIn} onClick={() => {
+            loginAsDemoUser()
+            navigate("/home")
+          }}>Login with demo credentials {isLoggingIn ? (<Loader2 className='animate-spin' />) : ""}</button>
 
           <div className='w-full text-center text-sm font-medium text-neutral-300'><button onClick={() => (navigate("/forgot-password"))}className='cursor-pointer hover:text-neutral-400'>Forgot Password?</button></div>
         </div>
