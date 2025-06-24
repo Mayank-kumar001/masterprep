@@ -10,11 +10,11 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://ec2-3-108-235-156.ap-south-1.compute.amazonaws.com:8080',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    exposedHeaders: ['Set-Cookie', '*']
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    // exposedHeaders: ['Set-Cookie', '*']
 }))
 
 app.get("/", (req, res) => {
