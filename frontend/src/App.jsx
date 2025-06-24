@@ -24,6 +24,7 @@ import RazorPayCallbackPage from './pages/RazorPayCallbackPage'
 import CallStackPage from './pages/CallStackPage'
 import Navbar from './components/Navbar'
 import { useMotionValueEvent, useScroll } from 'motion/react'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
   
@@ -52,6 +53,8 @@ function App() {
       <Route element={<PaidPlaylistDescriptionPage />} path='/playlist/paid/:playlistId'></Route>
       <Route element={<RazorPayCallbackPage />} path='/razorpay'></Route>
       <Route element={<CallStackPage />} path='/callStack'></Route>
+      <Route element={<ProfilePage />} path='/profile'></Route>
+      
     </Routes>
     </div>
   )

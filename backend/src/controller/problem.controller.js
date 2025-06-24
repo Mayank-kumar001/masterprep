@@ -274,3 +274,60 @@ export const getSolvedProblems = async (req, res) => {
         })
     }
 }
+
+export const getReport = async (req, res) => {
+    try {
+        const allProblems = await db.problem.findMany();
+        const totalProblems = allProblems.length;
+        // allProblems.map((e) => console.log(e.difficulty))
+        const TotalEasyProblems = allProblems.filter(problem => problem.difficulty === "EASY").length;
+        const TotalMediumProblems = allProblems.filter(problem => problem.difficulty === "MEDIUM").length;
+        const TotalHardProblems = allProblems.filter(problem => problem.difficulty === "HARD").length;
+        const allSolvedProblems = await db.problem.findMany(
+            {
+                where:{
+                    solvedBy:{
+                        some:{
+                            userId:req.user.id,
+                        }
+                    }
+                },
+                include:{
+                    solvedBy:{
+                        where:{
+                            userId:req.user.id,
+                        }
+                    }
+                }
+            }
+        );
+        const totalSolvedProblems = allSolvedProblems.length;
+        const totalSolvedEasyProblems = allSolvedProblems.filter(problem => problem.difficulty === "EASY").length;
+        const totalSolvedMediumProblems = allSolvedProblems.filter(problem => problem.difficulty === "MEDIUM").length;
+        const totalSolvedHardProblems = allSolvedProblems.filter(problem => problem.difficulty === "HARD").length;
+        res.status(200).json(new apiResponse(200, {
+            totalProblems,
+            TotalEasyProblems,
+            TotalMediumProblems,
+            TotalHardProblems,
+            totalSolvedProblems,
+            totalSolvedEasyProblems,
+            totalSolvedMediumProblems,
+            totalSolvedHardProblems,
+        }, "Report generated succesfully"));
+        
+    } catch (error) {
+        if (error instanceof apiError) {
+            return res.status(error.statusCode).json({
+                statusCode: error.statusCode,
+                message: error.message,
+                success: false,
+            })
+        }
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Something went wrong while generating report",
+            success: false,
+        })
+    }
+}

@@ -68,7 +68,9 @@ function Navbar({ isScroll }) {
         <button onClick={() => navigate("/signup")} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Sign up</button>
       </div>) : (<div className="flex gap-4 justify-end w-full">
         <button onClick={logoutUser} className="py-1 px-4 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600">Logout</button>
+        <img onClick={() => navigate("/profile")} className="rounded-2xl cursor-pointer hover:shadow-[0px_2px_1px_rgba(221,_221,_221,_1),_0_5px_20px_rgba(204,_204,_204,_1)]" src="./user.png" alt=""  width={"30px"}/>
       </div>)}
+      
     </motion.nav>
   );
 }
