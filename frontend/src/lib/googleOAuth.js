@@ -1,7 +1,7 @@
-import crypto from "crypto"
+import { v4 as uuidv4 } from 'uuid';
 
 const getCodeFromGoogle = async (status) => {
-    const csrfToken = crypto.randomUUID();
+    const csrfToken = uuidv4();
     sessionStorage.setItem("oauth_csrf_token", csrfToken);
     const state = btoa(JSON.stringify({
         csrfToken,
